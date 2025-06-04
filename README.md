@@ -8,6 +8,10 @@ prerequirements:
 ```
 pip install Pillow
 ```
+or
+```
+pip install -r requirements.txt
+```
 run on windows:
 ```
 python3.exe .\__main__.py
