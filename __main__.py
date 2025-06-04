@@ -1,59 +1,44 @@
 from dice_logic import roll_dice, count_successes, calculate_probability
 from image_generator import create_dice_image
 
-def update_file():
-    """Read and close the main file to trigger file system update"""
+def update_file_timestamp():
+    """Touch the main file to update the file system timestamp (e.g., for reload triggers)."""
     try:
-        with open('__main__.py', 'r') as f:
-            pass  # Just open and close to update file timestamp
-    except:
-        pass  # Ignore if file doesn't exist or can't be read
+        with open('__main__.py', 'r'):
+            pass
+    except FileNotFoundError:
+        pass
 
 def main():
     print("=== Coriolis Dice Roller ===")
     print("Enter number of dice to roll (or 'quit' to exit)")
-    
+
     while True:
         try:
             user_input = input("\nNumber of dice: ").strip().lower()
-            
+
             if user_input == 'quit':
                 print("Thanks for playing!")
                 break
-            
+
             num_dice = int(user_input)
-            
             if num_dice < 1:
                 print("Please enter a positive number of dice.")
                 continue
-            
-            # Roll the dice
+
             results = roll_dice(num_dice)
             successes = count_successes(results)
-            
-            # Display results
             dice_display = " ".join(f"[{die}]" for die in results)
+
             print(f"\n{dice_display}")
-            
-            # Determine success or failure
-            if successes >= 1:
-                if successes == 1:
-                    print(f"{successes} success!")
-                else:
-                    print(f"{successes} successes!")
-            else:
-                print("Failure!")
-            
-            # Calculate and display probability
+            print(f"{successes} success{'es' if successes != 1 else ''}!" if successes else "Failure!")
+
             probability = calculate_probability(num_dice, successes)
             print(f"{probability:.1f}% chance for this outcome")
-            
-            # Create the PNG image
+
             create_dice_image(results, successes, probability)
-            
-            # Update file to trigger refresh
-            update_file()
-            
+            update_file_timestamp()
+
         except ValueError:
             print("Please enter a valid number or 'quit' to exit.")
         except KeyboardInterrupt:
